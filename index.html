@@ -1,44 +1,442 @@
 <html>
 
 <head>
-    <meta charset=utf-8>
-    <link rel="stylesheet" href="fox.css">
+
     <title>FOX RABBIT AND CARROT</title>
+    <script src="js/vex/vex.combined.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script>vex.defaultOptions.className = 'vex-theme-os'</script>
+    <link rel="stylesheet" href="css/vex/vex.css" />
+    <link rel="stylesheet" href="css/vex/vex-theme-os.css" />
+
     <script src="js/moves.js" defer></script>
+    <meta charset=utf-8>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="css/vex.css" rel="stylesheet" />
+    <link href="css/vex-theme-default.css" rel="stylesheet" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kavoon&family=Mali:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+    <!-- Script demo tutorial START-->
+    <script>
+        var demo = {};
+        vex.dialog.defaultOptions.showCloseButton = true;
+
+        demo.loadInitialDialogs = function () {
+            $('body').addClass('page-intro');
+
+            demo.initialDialogsClassName = 'vex-theme-wireframe vex-theme-stack-demo'
+
+            for (var i = 3; i > -1; i--) {
+                vex.dialog.alert({
+                    appendLocation: '.stack',
+                    unsafeMessage: $('.stack-templates > div:nth-child(' + (i + 1) + ')').html(),
+                    className: demo.initialDialogsClassName,
+                    buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, { text: '►' })
+                    ],
+                    callback: function (value) {
+                        setTimeout(function () {
+                            demo.advanceDemoDialogs();
+                        }, 0);
+                    }
+                });
+            }
+
+            demo.advanceDemoDialogs();
+        };
+
+        demo.advanceDemoDialogs = function () {
+            var $remaining = $('.stack > .vex:not(".vex-closing")');
+
+            $('.stack').show();
+
+            $.each($remaining.removeClass('v0 v1 v2 v3').toArray().reverse(), function (i, item) {
+                $(item).addClass('v' + i);
+            });
+
+            $('.stack > .v0:not(".vex-closing") button[type="submit"]').focus();
+
+            if ($remaining.length === 4) {
+                $('.vex:not(".vex-closing")').removeClass('vex-theme-wireframe').addClass('vex-theme-os example');
+                
+                $('.vex:not(".vex-closing")').find('[data-example]').each(function () {
+                    $(this).click(function () {
+                        examples[$(this).data('example')]();
+                    });
+                });
+            }
+
+           if ($remaining.length === 0) {
+                $('body').removeClass('page-intro');
+                setTimeout(function () {
+                    $('.stack').hide();
+                }, 600);
+            }
+        }
+    </script>
+    <!-- Script demo tutorial END -->
+
+
 </head>
 
 <body>
-<div id="flex-container">
-    <div style="flex-grow: 1" class="flex-start" id="start">
-        <img id="rabbit" width="100px" src="img/characters/Rabbit_Down.png">
-        <img id="fox" width="100px" src="img/characters/Fox_Down.png">
-        <img id="carrot" width="100px" src="img/characters/Carrot@2x.png">
+ <!-- Style tutorial START-->
+    <style>
+        html, body {
+            overflow: hidden;
+            margin: 0;
+        }
+        body.demo-start .page, body.page-intro .page {
+            opacity: 0;
+            z-index: 0;
+        }
 
+        .page {
+            color: #000;
+            font-family: "Kavoon";
+            -webkit-transition: opacity 1s;
+            -moz-transition: opacity 1s;
+            -o-transition: opacity 1s;
+            transition: opacity 1s;
+            text-align: center;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: fixed;
+            width: 40em;
+            max-width: 100%;
+            height: 36em;
+            z-index: 50;
+        }
+        .page h1 {
+            font-size: 110px;
+            font-weight: 100;
+            margin: 40px 0;
+        }
+        .page h2 {
+            font-size: 2.5em;
+            font-weight: 100;
+            margin: 1em 0;
+        }
+        .page p {
+            margin: 1em 0;
+        }
+        .page a {
+            display: inline-block;
+            border: 2px solid #000;
+            color: #000;
+            padding: 1em 1.25em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 150px;
+            line-height: 1.3em;
+        }
+        .page a.demo-link {
+            margin-left: 20px;
+            border-color: transparent;
+            background: #000;
+            color: #fff;
+            font-weight: 700;
+        }
+
+
+        .stack {
+            color: #000;
+            font-family: "Mali";
+            -webkit-transition: opacity 1s;
+            -moz-transition: opacity 1s;
+            -o-transition: opacity 1s;
+            transition: opacity 1s;
+            text-align: center;
+            -webkit-perspective: 700px;
+            -webkit-perspective-origin: 320px 700px;
+            margin: 0 auto;
+            height: 850px;
+            width: 640px;
+            max-width: 100%;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        @-moz-document url-prefix() {
+            .stack {
+                height: 640px;
+            }
+        }
+
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo {
+            overflow: hidden;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-content {
+            font-family: "Mali";
+            font-weight: 400;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-dialog-form .vex-dialog-buttons {
+            padding-top: 1em;
+            margin-bottom: -2em;
+            margin-left: -2em;
+            margin-right: -1em;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-content h1 {
+            font-weight: 100;
+            font-size: 60px;
+            line-height: 1.2em;
+            margin: 0;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-content h2 {
+            font-weight: 100;
+            font-size: 40px;
+            line-height: 1.2em;
+            margin: 0;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-content h2 u {
+            text-decoration: none;
+            font-weight: 300;
+        }
+        .vex.vex-theme-flat-attack.vex-theme-flat-attack-demo .vex-dialog-form .vex-dialog-buttons .vex-dialog-button {
+            font-family: "Mali";
+            font-size: 2em;
+            font-weight: 300;
+        }
+
+        .vex.vex-theme-stack-demo {
+            overflow: hidden;
+        }
+        .vex.vex-theme-stack-demo.vex-theme-os .vex-dialog-message {
+            padding: 1em;
+        }
+        .vex.vex-theme-stack-demo.vex-theme-wireframe .vex-overlay, .vex.vex-theme-stack-demo.vex-theme-os .vex-overlay {
+            display: none;
+        }
+        .vex.vex-theme-stack-demo.vex-theme-flat-attack.vex-theme-flat-attack-green .vex-overlay {
+            display: block;
+            background: #34b989;
+            top: 80px;
+            bottom: 270px;
+        }
+        .vex.vex-theme-stack-demo .vex-content {
+            font-family: "Mali";
+            font-weight: 400;
+            width: 600px;
+            color: #a5512b;
+        }
+        .vex.vex-theme-stack-demo .vex-dialog-message {
+            padding-top: 1em;
+            text-align: left;   
+            height: 320px;
+        }
+        .vex.vex-theme-stack-demo .vex-dialog-message h1 {
+            line-height: 1.3em;
+        }
+        .vex.vex-theme-stack-demo.vex-closing {
+            -webkit-transform: translate3d(0px, 200px, 200px);
+        }
+
+        .stack > .vex {
+            pointer-events: all;
+            -webkit-transition: -webkit-transform 0.7s;
+        }
+
+        .stack > .v0 { -webkit-transform: translate3d(0px, 0px, 0px); }
+        .stack > .v1 { -webkit-transform: translate3d(0px, -200px, -200px); }
+        .stack > .v2 { -webkit-transform: translate3d(0px, -400px, -400px); }
+        .stack > .v3 { -webkit-transform: translate3d(0px, -600px, -600px); }
+        .stack > .v4 { -webkit-transform: translate3d(0px, -800px, -800px); }
+
+        @media (max-width: 568px) {
+            .stack {
+                display: none;
+            }
+
+            body.demo-start .page, body.page-intro .page {
+                opacity: 1;
+            }
+
+            .page h2 {
+                font-size: 20px;
+            }
+
+            .page a {
+                width: 100px;
+                font-size: 10px;
+            }
+
+            .page h1 {
+                padding-top: .5em;
+            }
+
+            .vex.vex-theme-default .vex-dialog-form .vex-dialog-buttons .vex-dialog-button:focus {
+                animation: none;
+                -webkit-animation: none;
+                -moz-animation: none;
+                -ms-animation: none;
+                -o-animation: none;
+            }
+        }
+
+        .vex.example {
+            z-index: 9999;
+        }
+
+        .examples a {
+            background: #3288e6;
+            color: #fff;
+            padding: 8px 18px 6px;
+            cursor: pointer;
+            margin: 0 20px 20px 0;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .themes a {
+            background: #34b989;
+            color: #fff;
+            padding: 8px 18px 6px;
+            cursor: pointer;
+            margin: 0 20px 20px 0;
+            display: inline-block;
+        }
+        .themes a.selected {
+            background: #2B755B;
+        }
+
+        .button {
+            text-decoration: none;
+            background: #000;
+            color: #fff;
+            padding: 8px 18px 6px;
+            cursor: pointer;
+            margin: 0 20px 20px 0;
+            display: inline-block;
+        }
+    </style>
+ <!-- Style tutorial END-->
+
+<div id="header" >
+    <div id="coinbox" class="coinbox"><img width="50px" src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Gold_coin_icon.png"><span class="coinstext">100</span></div></div>
+    <div id="flex-container">
+        <img style="display: block" id="message" class="message"  src="img/message.png">
+        <img style="display: none" id="message2" class="message"  src="img/message2.png">
+        <div style="flex-grow: 0" class="flex-start" id="start">
+            <img class="characters bounce2" style="animation-delay: 0.62s; animation-duration: 1.5s;" id="rabbit" width="120px" src="img/characters/Rabbit_Down.png">
+            <img class="characters bounce2" style="animation-delay: 0.53s; animation-duration: 1.8s;"id="fox" width="120px" src="img/characters/Fox_Down.png">
+            <img class="characters bounce2" style="animation-delay: 0.42s; animation-duration: 2s;" id="carrot" width="120px" src="img/characters/Carrot@2x.png">
+
+        </div>
+        <div id="farmers_place" style="flex-grow: 0" class="flex-farmer">
+            <img class="farmer bounce2" style="animation-delay: 0.32s; animation-duration: 2.3s;" id="farmer" width="100px" src="img/characters/farmer.png">
+            <img class="bridge1" id="bridge1" width="150px" src="img/bridge.png">
+        </div>
+        <div id="water-border" class="water-border"></div>
+        <div id="boat1" style="flex-grow: 2" class="flex-riever left">
+
+            <img class="boat swing" id="theboat" width="360px" src="img/theboat.png">
+        </div>
+
+        <div id="boat2" style="flex-grow: 2" class="flex-riever right"></div>
+        <div id="water-border2" class="water-border"></div>
+        <div id="farmers_place2" style="flex-grow: 0" class="flex-farmer">
+            <img class="bridge2" id="bridge2" width="150px" src="img/bridge.png">
+        </div>
+        <div id="end" style="flex-grow: 0" class="flex-end">
+        </div>
     </div>
-    <div style="flex-grow: 1" class="flex-farmer">
-        <img id="farmer" width="100px"
-           src="img/characters/farmer.png">
+    <!-- Character is Allready in the Boat Error Message -->
+    <div id="CharallreadyInTheBoatMessage" class="error-message" style="display: none">
+        <a href="#" onclick="document.getElementById('CharallreadyInTheBoatMessage').style.display='none';return false;"
+            id="close_popup"></a>
+        <span class="error-text">Farmer can take only One character at time.<br>There is allready someone in the
+            boat.</span>
     </div>
-    <div  id="boat1" style="flex-grow: 3" class="flex-riever">
-        <img id="boat" width="310px" src="img/theboat.png"></div>
-    <div  id="boat2" style="flex-grow: 3" class="flex-riever"></div>
-    <div  id="end" style="flex-grow: 1" class="flex-end"></div>
-</div>
+    <!-- Character is Allready in the Boat Error Message -->
+    <div id="NoFarmerInTheBoatMessage" class="error-message" style="display: none">
+        <a href="#" onclick="document.getElementById('NoFarmerInTheBoatMessage').style.display='none';return false;"
+            id="close_popup"></a>
+        <span class="error-text">The boat can't ride without farmer <br> Click at the farmet to put him in the
+            boat</span>
+    </div>
+    <div id="noBoatErrorMessage" class="error-message" style="display: none">
+        <a href="#" onclick="document.getElementById('noBoatErrorMessage').style.display='none';return false;"
+            id="close_popup"></a>
+        <span class="error-text">Oops! There is no boat! <br> Move the boat back to land the character there</span>
+    </div>
+
+    <div id="tutorial" class="error-message-small" style="display: block">
+        <a  onclick="demo.loadInitialDialogs();" class="demo-link">Tutorial</a>
+        <a href="#" onclick="document.getElementById('tutorial').style.display='none';return false;" id="close_popup"></a>
+    </div>
+
+    <!-- Tutorial body START -->
+    <div class="stack" ></div>
+    <div class="stack-templates" style="display: none">
+        <div>
+            <h1>Help Farmer Transport His Friends Across the River!</h1>
+            <div class="reveal">
+                <p>Find a way to transport all characters across the river without any of them getting eaten.</p>
+                <img src="img/map1.png" class="reveal-img" >
+            </div>
+        </div>
+        <div>
+            <h1>The boat is too small </h1>
+            <div class="reveal">
+                <p>The Farmer can only take one character with him on the boat at a time, so he must make multiple trips to transport all three characters.
+                </p><img src="img/map2.png" class="reveal-img" >
+            </div>
+        </div>
+        <div>
+            <h1>Leave them alone very carefully</h1>
+            <div class="reveal">
+                <p>The Farmer can never leave the Fox and the Rabbit (or the Rabbit and the Carrot) together on one side of the river without supervision.</p>
+                <img src="img/map3.png" class="reveal-img" >
+            </div>
+        </div>
+        <div>
+            <h1>How to win?</h1>
+            <div class="reveal">
+                <p>In order to win, all characters must be on the other side of the river with the farmer</p>
+                <img src="img/map4.png" class="reveal-img" >
+            </div>
+        </div>
+        
+    </div>
+
+    <style>
+        .reveal {
+            -webkit-transition: opacity 1s 0.3s;
+            -moz-transition: opacity 1s 0.3s;
+            -o-transition: opacity 1s 0.3s;
+            transition: opacity 1s 0.3s;
+            opacity: 0;
+        }
+
+        .vex.v0 .reveal {
+            opacity: 1;
+        }
+
+        .vex.v0 .reveal .reveal-img {
+           max-width: 540px;
+            position: relative; 
+        }
+
+    </style>
+   <!-- Tutorial body END -->
 
 <script>
-char_counter=0;
-let fox = document.getElementById("fox");
-const rabbit = document.getElementById("rabbit");
-const farmer = document.getElementById("farmer");
-const carrot = document.getElementById("carrot");
-
-const start = document.getElementById("start");
-const boat = document.getElementById("boat");
-const end = document.getElementById("end");
-
-async function charMovesToPlace(fox, start, boat) {};
-
-
 
 </script>
 </body>
